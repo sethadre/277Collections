@@ -2,49 +2,97 @@ import java.util.*;
 import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
+
 public class Collection {
     public static void main(String[] args) {
-
-
-    Instant start = Instant.now();
-    //your code
-    Instant end = Instant.now();
-    Duration timeElapsed = Duration.between(start, end);
-        System.out.println("Time taken: "+ timeElapsed.toMillis() +" milliseconds");
-        Scanner in = new Scanner(new File("PointValue.txt"));
-    Map <String,Integer> pointValue = new HashMap<String,Integer>();
-        /*
-    }
-        put("A", 9);put("B",2);put("C",2);put("D",4);put("E",12);put("F",2);
-        put("G",3);put("H",2);put("I",9);put("J",1);put("K",1);put("L",4);
-        put("M",2);put("N",6);put("O",8);put("P",2);put("Q",1);put("R",6);
-        put("S",4);put("T",6);put("U",4);put("V",2);put("W",2);put("X",1);
-        put("Y",2);put("Z",1);put(" ",2);*/
-
-    while(in.hasNextLine()) {
-        pointValue.put(in.next(),in.nextInt());
-        in.nextLine();
-    }
-
-
-    Map<String,Interger> scrabbleHash = new has....
-//Map<String,Interger> scrabbleTree = new HashTree<String,Integer>();
-
-
-            while(fileStream.hasNext()) {
-
-        String whatwegot = fileStream.nextLine();
-        String[] ar = whatwegot.split();
-        int total = 0;
-        for (String letter: ar) {
-            total += pointCalc.get(letter);
+        Map<String, Integer> wordMap = new TreeMap<String, Integer>();
+        Map<Character, Integer> pointMap = new HashMap<Character,Integer>();
+        if (args[0].equals("Tree")) {
+            System.out.println("Using TreeMap as data structure");
+            wordMap = new TreeMap<String, Integer>();
+            pointMap = new TreeMap<Character,Integer>();
+        } else if (args[0].equals("Hash")) {
+            System.out.println("Using HashMap as data structure");
+            wordMap = new HashMap<String, Integer>();
+            pointMap = new HashMap<Character,Integer>();
         }
-        scrabbleHash.put(whatwegot,total);
-//scrabbleTree.put(whatwegot,total);
+        Scanner in = new Scanner(System.in);
+        try {
+            in = new Scanner(new File("QNoU.txt"));
+            System.out.println("Creating Map from file");
+            Instant start = Instant.now();
+            while (in.hasNext()) {
+                wordMap.put(in.nextLine(), 0);
+            }
+            Instant end = Instant.now();
+            Duration timeElapsed = Duration.between(start, end);
+            System.out.println("Time taken: " + timeCalculator(timeElapsed.toNanos()));
+            in.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to open file");
+            e.printStackTrace();
+        } catch (InputMismatchException e) {
+            System.out.println("Incorrect in.next has occured, either wrong amount or wrong .nextXXXX");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Unknown error has occured");
+            e.printStackTrace();
+        }
+
+        try {
+            in = new Scanner(new File("Scrabble.txt"));
+            while (in.hasNext()) {
+                pointMap.put(Character.toUpperCase(in.next().charAt(0)), in.nextInt()) ;
+            }
+
+            in.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to open Scrabble file");
+            e.printStackTrace();
+        } catch (InputMismatchException e) {
+            System.out.println("Error with accessing data in file with in.next, check syntax");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Unknown error has occured");
+            e.printStackTrace();
+        }
+
+        Iterator<Map.Entry<String, Integer>> wordIt = wordMap.entrySet().iterator();
+        System.out.println("Updating point values");
+        Instant start = Instant.now();
+        while (wordIt.hasNext()) {
+            Map.Entry<String, Integer> pair = wordIt.next();
+            int pointTotal = 0;
+            for (char c : pair.getKey().toCharArray()) {
+                c = Character.toUpperCase(c);
+                pointTotal += pointMap.get(c);
+            }
+            wordMap.replace(pair.getKey(), 0, pointTotal);
+        }
+        Instant end = Instant.now();
+        Iterator<Map.Entry<String, Integer>> it = wordMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Integer> pair = it.next();
+            System.out.printf("key: %-15s", pair.getKey());
+            System.out.println(" value: " + pair.getValue());
+        }
+        Duration timeElapsed = Duration.between(start, end);
+        System.out.println("Time taken: " + timeCalculator(timeElapsed.toNanos()));
+        in.close();
     }
+	public static String timeCalculator(long t) {
+		StringBuilder builder = new StringBuilder();
+		// builder.append("Your time is ");
+		if (t/Math.pow(10.0, 9.0) > 1) {
+			builder.append(t/Math.pow(10.0, 9.0) + " seconds\n");
+		} else if (t/Math.pow(10.0, 6.0) > 1) {
+			builder.append(t/Math.pow(10.0, 6.0) + " milli seconds\n");
+		} else if (t/Math.pow(10.0, 3.0) > 1) {
+			builder.append(t/Math.pow(10.0, 3.0) + " micro seconds!!!\n");
+		} else {
+			builder.append(t + " nano seconds!!!\n");
+		}
+		return builder.toString();
+	}
 }
-}
-
-
-
-
